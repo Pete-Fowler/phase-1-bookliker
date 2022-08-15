@@ -2,3 +2,11 @@ body {
 	display: grid;
 	grid-template-columns: 2fr 8fr
 }
+
+li {
+	padding: 5px 5px;
+}
+
+li:hover {
+	font-weight: 900;
+}

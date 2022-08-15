@@ -1,15 +1,25 @@
 const displayDetails = (book) => {
   const panel = document.querySelector('div#show-panel');
+  panel.textContent = '';
   const box = document.createElement('div');
+ 
   const img = document.createElement('img');
   img.src = book.img_url;
+  
   const description = document.createElement('p');
   description.textContent = book.description;
+  
+  
   const likers = document.createElement('p');
-  likers.textContent = book.likers;
+  const users = book.users;
+  likers.textContent = 'Liked by: |';
+  for(const user in users) {
+    // console.log(users[user].username);
+    likers.textContent += ` ${users[user].username} |`;
+  }
+  console.log(likers.textContent);
   box.append(img, description, likers);
   panel.append(box);
-  console.log(book);
 }
 
 const displayTitles = (data) => {

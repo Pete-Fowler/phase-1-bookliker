@@ -1,4 +1,56 @@
+let clickedBook;
+const likers = document.createElement('p');
+
+const clickBook = (e) => {
+  if(e.target.textContent === 'Like Book') {
+    e.target.textContent = 'Unlike';
+    const usersObject = [...clickedBook.users, {"username": "Pete"}]
+    const config = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({"users": usersObject}),
+    }
+    fetch(`http://localhost:3000/books/${clickedBook.id}`, config)
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => alert(err.message));
+
+    const users = usersObject;
+    likers.textContent = 'Liked by: |';
+    for(const user in users) {
+      likers.textContent += ` ${users[user].username} |`;
+    }
+  } else {
+    e.target.textContent = 'Like Book';
+    const usersObject = [...clickedBook.users, {"username": "Pete"}].filter((x) => {
+      return x.username !== "Pete";
+    });
+    const config = {
+      method: 'PATCH',
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    },
+      body: JSON.stringify({"users": usersObject}),
+    }
+    fetch(`http://localhost:3000/books/${clickedBook.id}`, config)
+    .then(res => res.json())
+    .then(data => console.log(data))
+    .catch(err => alert(err.message));  
+
+    const users = usersObject;
+    likers.textContent = 'Liked by: |';
+      for(const user in users) {
+        likers.textContent += ` ${users[user].username} |`;
+      }
+  }
+}
+
 const displayDetails = (book) => {
+  clickedBook = book;
   const panel = document.querySelector('div#show-panel');
   panel.textContent = '';
   const box = document.createElement('div');
@@ -9,16 +61,17 @@ const displayDetails = (book) => {
   const description = document.createElement('p');
   description.textContent = book.description;
   
-  
-  const likers = document.createElement('p');
   const users = book.users;
   likers.textContent = 'Liked by: |';
   for(const user in users) {
-    // console.log(users[user].username);
     likers.textContent += ` ${users[user].username} |`;
   }
-  console.log(likers.textContent);
-  box.append(img, description, likers);
+
+  const likeBtn = document.createElement('button');
+  likeBtn.textContent = 'Like Book';
+  likeBtn.addEventListener('click', clickBook);
+
+  box.append(img, description, likeBtn, likers);
   panel.append(box);
 }
 
@@ -40,7 +93,3 @@ const getTitles = (e) => {
 }
 
 document.addEventListener("DOMContentLoaded", getTitles);
-
-// When a user clicks the title of a book, display the book's thumbnail, 
-// description, and a list of users who have liked the book. This information 
-// should be displayed in the div#show-panel element.
